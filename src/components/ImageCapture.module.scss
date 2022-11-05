@@ -1,0 +1,77 @@
+$button-font-size: 40px;
+
+@media (max-width > 760) {
+	$button-font-size: 40px;
+}
+
+@media (max-width < 760) {
+	$button-font-size: 20px;
+}
+
+/* The picture box container */
+.container {
+	margin: 5px;
+	padding: 5px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+}
+
+/* Where the image / video is displayed */
+.main {}
+
+/* Child elements of the main element */
+.main>* {
+	width: 100%;
+}
+
+/* Control bar (buttons are there) */
+.controls {
+	margin-top: 10px;
+	width: 100%;
+}
+
+/* Camera controls */
+.controls>.camera {}
+
+/* Buttons from the camera controls */
+.controls>.camera>button {
+	width: 100%;
+	font-size: $button-font-size;
+}
+
+.controls>.picture {
+	display: flex;
+	justify-content: space-between;
+}
+
+/* Controls for the picture  */
+.controls>.picture>button {
+	font-size: $button-font-size;
+	width: 49.5%;
+	/*margin-inline: 10px;*/
+}
+
+/* Floating button */
+/* .floating-button {
+	position: fixed;
+	bottom: 20px;
+	right: 20px;
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	background-color: #0070f3;
+	color: #fff;
+	font-size: 30px;
+	text-align: center;
+	line-height: 50px;
+	box-shadow: 2px 2px 3px #999;
+	cursor: pointer;
+  }
+  
+  .picture-button {
+	width: "100%";
+	font-size: 36;
+	padding-bottom: "10px";
+  }
+  
+   */
