@@ -33,7 +33,8 @@ jobs:
       uses: azure/CLI@v1
       with:
         inlineScript: |
-            az storage blob upload-batch --account-name moneycounter  --auth-mode login -d '$web' -s ./dist
+            az storage blob delete-batch --account-name moneycounter --auth-mode login --source '$web' 
+            az storage blob upload-batch --account-name moneycounter --auth-mode login -d       '$web' -s ./dist
     
 #    - name: Purge CDN endpoint
 #      uses: azure/CLI@v1
