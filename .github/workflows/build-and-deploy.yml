@@ -28,7 +28,7 @@ jobs:
       
     - name: Build
       env:
-        VITE_BACKEND_BASE_URL=${{ secrets.VITE_BACKEND_BASE_URL }}
+        VITE_BACKEND_BASE_URL: ${{ secrets.VITE_BACKEND_BASE_URL }}
       run: yarn run build
       
     - name: Upload to blob storage
