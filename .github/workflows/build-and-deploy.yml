@@ -1,0 +1,43 @@
+name: Deploy
+
+on:   
+  push:
+    branches: [ main ]
+  
+jobs: 
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    # checkout the repo
+    - uses: actions/checkout@main
+      
+    - uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v3.5.1
+      with:
+        # Used to specify a package manager for caching in the default directory. Supported values: npm, yarn, pnpm.
+        cache: yarn
+        # Used to specify the path to a dependency file: package-lock.json, yarn.lock, etc. Supports wildcards or a list of file names for caching multiple dependencies.
+        cache-dependency-path: yarn.lock
+        
+    - name: Restore packages
+      run: yarn install
+      
+    - name: Build
+      run: yarn run build
+      
+    - name: Upload to blob storage
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+            az storage blob upload-batch --account-name moneycounter  --auth-mode login -d '$web' -s ./dist
+    
+#    - name: Purge CDN endpoint
+#      uses: azure/CLI@v1
+#      with:
+#        inlineScript: |
+#           az cdn endpoint purge --content-paths  "/*" --profile-name "CDN_PROFILE_NAME" --name "CDN_ENDPOINT" --resource-group "${{ secrets.RESOURCE_GROUP }}"
+    

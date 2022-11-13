@@ -20,12 +20,10 @@ enum HomeState {
 	Result
 }
 
-
-export function Home(props: HomeProps) {
+export function Home({}: HomeProps) {
 	const [state, setState] = createSignal(HomeState.Capture);
 	const [picture, setPicture] = createSignal<string | null>(null);
-	const predictor = new Predictor(import.meta.env.BACKEND_BASE_URL);
-
+	const predictor = new Predictor(import.meta.env.VITE_BACKEND_BASE_URL);
 
 	function pictureTaken(picture: string) {
 		setPicture(picture);
@@ -48,7 +46,7 @@ export function Home(props: HomeProps) {
 		<Show when={state() === HomeState.Result}>
 			<Switch fallback={<span>⏳ Processing picture...</span>}>
 				<Match when={data.state === "errored"}>
-					<span>❌ Failed to process picture: {data.error}</span>
+					<span>❌ Failed to process picture: {data.error.match}</span>
 				</Match>
 				<Match when={data.state === "ready"}>
 					<div>
