@@ -1,19 +1,33 @@
-import type { Component } from 'solid-js';
+import Typography from '@suid/material/Typography';
+import Box from '@suid/material/Box';
+import Container from '@suid/material/Container';
+import AppBar from '@suid/material/AppBar';
+import Stack from '@suid/material/Stack';
+import { Toll } from '@suid/icons-material';
 
-import styles from './App.module.css';
 import { Home } from './Home';
 
-const App: Component = () => {
+
+function CustomAppBar() {
   return <>
-    <div class={styles.App}>
-      <header class={styles.header}>
-        <h1>Money Counter</h1>
+    <AppBar>
+      <Box sx={{ mx: 4 }}>
+        <Stack direction={'row'} alignItems='center'>
+          <Typography variant='h6'>Moedeiro </Typography>&nbsp;<Toll />
+        </Stack>
+      </Box>
+    </AppBar>
+  </>
+}
+function App() {
+  return <>
+    <Container maxWidth='md'>
+      <CustomAppBar />
+      <Box sx={{ my: 6 }}>
         <Home />
-      </header>
-      <main>
-      </main>
-    </div>
-  </>;
-};
+      </Box>
+    </Container>
+  </>
+}
 
 export default App;

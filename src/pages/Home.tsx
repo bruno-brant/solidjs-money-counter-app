@@ -4,6 +4,13 @@ import { DrawImage } from "../components/DrawImage";
 import { ImageDetails } from "../components/ImageDetails";
 import { Predictor } from "../lib/Predictor";
 import { ScoreSlider } from "../components/ScoreSlider";
+import Box from "@suid/material/Box";
+import Alert from "@suid/material/Alert";
+import Stack from "@suid/material/Stack";
+import Button from "@suid/material/Button";
+import AddAPhotoIcon from '@suid/icons-material/AddAPhoto';
+import Typography from "@suid/material/Typography";
+
 
 /** Props for the component {@link Home} */
 export interface HomeProps {
@@ -20,7 +27,7 @@ enum HomeState {
 	Result
 }
 
-export function Home({}: HomeProps) {
+export function Home({ }: HomeProps) {
 	const [state, setState] = createSignal(HomeState.Capture);
 	const [picture, setPicture] = createSignal<string | null>(null);
 	const predictor = new Predictor(import.meta.env.VITE_BACKEND_BASE_URL);
@@ -37,7 +44,7 @@ export function Home({}: HomeProps) {
 		return predictor.process(base64);
 	});
 
-	const [minScore, setMinScore] = createSignal(0.3);
+	const [score, setScore] = createSignal(0.5);
 
 	return <>
 		<Show when={state() === HomeState.Capture}>
@@ -46,15 +53,20 @@ export function Home({}: HomeProps) {
 		<Show when={state() === HomeState.Result}>
 			<Switch fallback={<span>⏳ Processing picture...</span>}>
 				<Match when={data.state === "errored"}>
-					<span>❌ Failed to process picture: {data.error.match}</span>
+					<Alert severity='error'>Failed to process picture {data.error.match ? ':' : ''}{data.error.match}</Alert>
 				</Match>
 				<Match when={data.state === "ready"}>
-					<div>
-						<DrawImage pictureDataUrl={picture()!} data={data()} minScore={minScore} />
-						<ScoreSlider minScore={[minScore, setMinScore]} />
-						<ImageDetails data={data()} minScore={minScore()} />
-						<button onClick={() => setState(HomeState.Capture)}>📷 Take another picture!</button>
-					</div>
+					<Stack spacing={1}>
+						<DrawImage pictureDataUrl={picture()!} data={data()} minScore={score} />
+						<ScoreSlider score={[score, setScore]} />
+						<ImageDetails data={data()} minScore={score()} />
+						<Button variant="contained" onClick={() => setState(HomeState.Capture)}>
+							<Stack direction='row' spacing={1} alignItems='center' justifyContent={'space-between'}>
+								<AddAPhotoIcon fontSize="large" />
+								<Typography variant="body1">Take another!</Typography>
+							</Stack>
+						</Button>
+					</Stack>
 				</Match>
 			</Switch>
 		</Show>

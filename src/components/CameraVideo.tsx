@@ -1,3 +1,7 @@
+import Alert from "@suid/material/Alert";
+import CircularProgress from "@suid/material/CircularProgress";
+import Stack from "@suid/material/Stack";
+import Typography from "@suid/material/Typography";
 import { JSX, createResource, Show, } from "solid-js";
 import { Video } from "./Video";
 
@@ -26,19 +30,18 @@ export function CameraVideo({ videoRef, onCameraInitialized }: CameraVideoProps)
 		}
 	}
 
-	return <div class="camera-video">
-		<div class="message">
-			<Show when={data.error}>
-				<span>❌ Error initializing camera!</span>
-			</Show>
-			<Show when={data.loading}>
-				<span>⏳ Initializing camera...</span>
-			</Show>
-		</div>
-		<div class="video-container">
-			<Show when={!data.loading && !data.error && data() != null}>
-				<Video videoRef={videoRef} stream={data() as any} autoplay />
-			</Show>
-		</div>
-	</div>
+	return <>
+		<Show when={data.error}>
+			<Alert severity="error">Error initializing camera!</Alert>
+		</Show>
+		<Show when={data.loading}>
+			<Stack>
+				<CircularProgress />
+				<Typography>Initializing camera...</Typography>
+			</Stack>
+		</Show>
+		<Show when={!data.loading && !data.error && data() != null}>
+			<Video videoRef={videoRef} stream={data() as any} autoplay width="100%" />
+		</Show>
+	</>
 }

@@ -1,6 +1,14 @@
+import Alert from '@suid/material/Alert';
+import Button from '@suid/material/Button';
+import Typography from '@suid/material/Typography';
 import { createSignal, createEffect, onMount, Show } from 'solid-js';
 import { CameraVideo } from './CameraVideo';
 import styles from './ImageCapture.module.scss';
+
+import AddAPhotoIcon from '@suid/icons-material/AddAPhoto';
+import ThumbUpAltIcon from '@suid/icons-material/ThumbUpAlt';
+import RestartAltIcon from '@suid/icons-material/RestartAlt';
+import Stack from '@suid/material/Stack';
 
 /** Possible states of the ImageCapture component. */
 enum ImageCaptureState {
@@ -71,38 +79,39 @@ export function ImageCapture({ onPictureTaken }: ImageCaptureProps) {
 	}
 
 	return <>
-		<div class={styles.container}>
-			<Show when={state() === ImageCaptureState.Error}>
-				<span>Error!</span>
-			</Show>
-			<Show when={state() !== ImageCaptureState.Error}>
-				<div class={styles.main}>
-					{/* 
-						Can't use show below because we need to hook the ref in canvas and CameraVideo simultaneously.
-						For that to happen, both components need to be rendered at the same time.
-						So we just hide one of them from the DOM but still render it.
-					*/}
-					<div style={getStyle(ImageCaptureState.Camera)} >
-						<CameraVideo videoRef={el => videoRef = el} onCameraInitialized={cameraInitialized} />
-					</div>
-					<div style={getStyle(ImageCaptureState.Picture)} >
-						<canvas ref={el => canvasRef = el} />
-					</div>
-				</div>
-				<div class={styles.controls}>
-					<Show when={state() === ImageCaptureState.Camera}>
-						<div class={styles.camera}>
-							<button type='button' onClick={pictureButtonClicked}>📷</button>
-						</div>
-					</Show>
-					<Show when={state() === ImageCaptureState.Picture}>
-						<div class={styles.picture}>
-							<button type='button' onClick={confirmButtonClicked}>✅</button>
-							<button type='button' onClick={resetButtonClicked}>🔄</button>
-						</div>
-					</Show>
-				</div>
-			</Show>
-		</div>
+		<Show when={state() === ImageCaptureState.Error}>
+			<Alert>
+				<Typography variant='body1'>❌ Error!</Typography>
+			</Alert>
+		</Show>
+		<Show when={state() !== ImageCaptureState.Error}>
+			{/* 
+				Can't use show below because we need to hook the ref in canvas and CameraVideo simultaneously.
+				For that to happen, both components need to be rendered at the same time.
+				So we just hide one of them from the DOM but still render it.
+			*/}
+			<div style={getStyle(ImageCaptureState.Camera)} >
+				<CameraVideo videoRef={el => videoRef = el} onCameraInitialized={cameraInitialized} />
+			</div>
+			<div style={{...getStyle(ImageCaptureState.Picture), width: "100%"}}>
+				<canvas ref={el => canvasRef = el} style={{width: "100%"}} width="100%" />
+			</div>
+			<div class={styles.controls}>
+				<Show when={state() === ImageCaptureState.Camera}>
+					<Button type='button' variant='contained' onClick={pictureButtonClicked} fullWidth>
+						<Stack direction='row' spacing={1} alignItems='end' justifyContent={'space-between'}>
+							<AddAPhotoIcon fontSize='large' />
+							<Typography variant='h5'>Click!</Typography>
+						</Stack>
+					</Button>
+				</Show>
+				<Show when={state() === ImageCaptureState.Picture}>
+					<Stack direction='row' spacing={2}>
+						<Button variant='contained' onClick={confirmButtonClicked} fullWidth><ThumbUpAltIcon fontSize='large' /></Button>
+						<Button variant='contained' onClick={resetButtonClicked} fullWidth><RestartAltIcon fontSize='large' /></Button>
+					</Stack>
+				</Show>
+			</div>
+		</Show>
 	</>;
 }

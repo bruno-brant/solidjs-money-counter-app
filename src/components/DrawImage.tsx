@@ -1,6 +1,7 @@
 import { Accessor, createEffect, createMemo, createSignal, For, onMount } from "solid-js";
 import { zip } from "../utils";
 import { ProcessingResult } from "../lib/Predictor";
+import Box from "@suid/material/Box";
 
 /** 
  * Props for component {@link DrawImage}
@@ -17,7 +18,6 @@ export interface DrawImageProps {
  */
 export function DrawImage({ pictureDataUrl, data, minScore }: DrawImageProps) {
 	let canvas: HTMLCanvasElement;
-
 
 	createEffect(() => {
 		const ctx = canvas.getContext("2d");
@@ -45,21 +45,14 @@ export function DrawImage({ pictureDataUrl, data, minScore }: DrawImageProps) {
 					ctx.strokeRect(xmin, ymin, xmax - xmin, ymax - ymin);
 					ctx.fillText(`${label} (${score})`, xmin, ymin);
 				}
-				// //ctx.strokeRect(xmin * img.width, ymin * img.height, (xmax - xmin) * img.width, (ymax - ymin) * img.height);
-				// ctx.strokeRect(xmin, ymin, xmax - xmin, ymax - ymin);
 			}
 		}
 	});
 
-	const sum = createMemo(() => {
-		return Array.from(zip(data.labels, data.scores))
-			//.map(parseInt) // as ints
-			.filter(([_, score]) => score >= minScore()) // filter by min score
-			.map(([label, _]) => label)
-			.reduce((a, b) => a + b, 0) // sum
-	});
+	return <>
 
-	return <div>
-		<canvas ref={el => canvas = el} />
-	</div>
+		<Box>
+			<canvas ref={el => canvas = el} style={{ width: "100%", height: "100%" }} />
+		</Box>
+	</>
 }
