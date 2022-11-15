@@ -14,7 +14,9 @@ export class Predictor {
 	 * Initializes a new instance of the {@link Predictor} class.
 	 * @param baseUrl The base url of the backend.
 	 */
-	constructor(private baseUrl: string) {}
+	constructor(private baseUrl: string) {
+		console.log(`Intialized predictor with base url ${baseUrl}`);
+	}
 
 	public async process(imageBase64: string) {
 		const result = await fetch(`${this.baseUrl}/predict`, {
