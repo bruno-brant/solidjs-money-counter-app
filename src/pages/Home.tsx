@@ -4,18 +4,10 @@ import { DrawImage } from "../components/DrawImage";
 import { ImageDetails } from "../components/ImageDetails";
 import { Predictor } from "../lib/Predictor";
 import { ScoreSlider } from "../components/ScoreSlider";
-import Box from "@suid/material/Box";
 import Alert from "@suid/material/Alert";
 import Stack from "@suid/material/Stack";
-import Button from "@suid/material/Button";
-import AddAPhotoIcon from '@suid/icons-material/AddAPhoto';
-import Typography from "@suid/material/Typography";
-
-
-/** Props for the component {@link Home} */
-export interface HomeProps {
-
-}
+import AddAPhotoIcon from "@suid/icons-material/AddAPhoto";
+import { MyIconButton } from "../components/MyIconButton";
 
 /**
  * Possible states of the {@link Home} component.
@@ -27,7 +19,7 @@ enum HomeState {
 	Result
 }
 
-export function Home({ }: HomeProps) {
+export function Home() {
 	const [state, setState] = createSignal(HomeState.Capture);
 	const [picture, setPicture] = createSignal<string | null>(null);
 	const predictor = new Predictor(import.meta.env.VITE_BACKEND_BASE_URL);
@@ -40,7 +32,7 @@ export function Home({ }: HomeProps) {
 	const [data] = createResource(picture, async (pic) => {
 		if (!pic) throw new Error("picture is null or undefined, can't process");
 
-		const base64 = pic.split(',')[1];
+		const base64 = pic.split(",")[1];
 		return predictor.process(base64);
 	});
 
@@ -53,22 +45,17 @@ export function Home({ }: HomeProps) {
 		<Show when={state() === HomeState.Result}>
 			<Switch fallback={<span>⏳ Processing picture...</span>}>
 				<Match when={data.state === "errored"}>
-					<Alert severity='error'>Failed to process picture {data.error.match ? ':' : ''}{data.error.match}</Alert>
+					<Alert severity='error'>Failed to process picture {data.error.match ? ":" : ""}{data.error.match}</Alert>
 				</Match>
 				<Match when={data.state === "ready"}>
 					<Stack spacing={1}>
 						<DrawImage pictureDataUrl={picture()!} data={data()} minScore={score} />
 						<ScoreSlider score={[score, setScore]} />
 						<ImageDetails data={data()} minScore={score()} />
-						<Button variant="contained" onClick={() => setState(HomeState.Capture)}>
-							<Stack direction='row' spacing={1} alignItems='center' justifyContent={'space-between'}>
-								<AddAPhotoIcon fontSize="large" />
-								<Typography variant="body1">Take another!</Typography>
-							</Stack>
-						</Button>
+						<MyIconButton icon={<AddAPhotoIcon fontSize="large" />} onClick={() => setState(HomeState.Capture)} text="Tirar outra!" />
 					</Stack>
 				</Match>
 			</Switch>
 		</Show>
-	</>
+	</>;
 }

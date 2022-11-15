@@ -7,9 +7,7 @@ import Table from "@suid/material/Table";
 import TableBody from "@suid/material/TableBody";
 import TableCell from "@suid/material/TableCell";
 import TableContainer from "@suid/material/TableContainer";
-import TableHead from "@suid/material/TableHead";
 import TableRow from "@suid/material/TableRow";
-import { mapArray } from "solid-js";
 import Typography from "@suid/material/Typography";
 
 export interface ImageDetailsProps {
@@ -17,21 +15,19 @@ export interface ImageDetailsProps {
 	minScore: number
 }
 
-export function ImageDetails({ data, minScore }: ImageDetailsProps): JSX.Element {
-
-
+export function ImageDetails(props: ImageDetailsProps): JSX.Element {
 	const filtered = () => {
-		const { boxes, labels, scores } = data;
+		const { boxes, labels, scores } = props.data;
 		return Array.from(zip(boxes, labels, scores))
-			.filter(([, , score]) => score >= minScore);
-	}
+			.filter(([, , score]) => score >= props.minScore);
+	};
 
 	const totalValue = () => sum(filtered().map(([, label,]) => label));
 
 	return <>
 		<Typography variant="h4">Detalhes</Typography>
 		<TableContainer component={Paper}>
-			<Table sx={{ minWidth: 650 }} aria-label="simple table">
+			<Table>
 				<TableBody>
 					<TableRow>
 						<TableCell variant="head">Quantidade de moedas</TableCell>
@@ -44,5 +40,5 @@ export function ImageDetails({ data, minScore }: ImageDetailsProps): JSX.Element
 				</TableBody>
 			</Table>
 		</TableContainer>
-	</>
+	</>;
 }

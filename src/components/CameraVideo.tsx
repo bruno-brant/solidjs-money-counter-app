@@ -1,9 +1,56 @@
 import Alert from "@suid/material/Alert";
-import CircularProgress from "@suid/material/CircularProgress";
+import Fab from "@suid/material/Fab";
 import Stack from "@suid/material/Stack";
-import Typography from "@suid/material/Typography";
-import { JSX, createResource, Show, } from "solid-js";
+import { JSX, createResource, Show, Switch, Match, createSignal, } from "solid-js";
 import { Video } from "./Video";
+import FlipCameraIosIcon from "@suid/icons-material/FlipCameraIos";
+import { TextualSpinner } from "./TextualSpinner";
+
+interface _VideoProps {
+	availableDevices: string[];
+	videoRef?: JSX.VideoHTMLAttributes<HTMLVideoElement>["ref"];
+	onCameraInitialized?(success: boolean): void;
+}
+
+function _Video(props: _VideoProps) {
+	const [videoDeviceIndex, setVideoDeviceId] = createSignal(0);
+
+	const [videoStream] = createResource(videoDeviceIndex, async (deviceIndex) => {
+		console.log("Getting video stream for device", deviceIndex);
+
+		const stream = await navigator.mediaDevices.getUserMedia({
+			video: {
+				deviceId: props.availableDevices[deviceIndex]
+			}
+		});
+
+		props.onCameraInitialized?.(true);
+
+		return stream;
+	});
+
+	async function flipCamera() {
+		setVideoDeviceId(idx => idx + 1 % props.availableDevices.length);
+	}
+
+	return <>
+		<Switch fallback={<Alert severity="error">Error initializing camera!</Alert>}>
+			<Match when={videoStream.loading}>
+				<TextualSpinner text="Initializing camera..."/>
+			</Match>
+			<Match when={true}>
+				<Stack justifyContent='end'>
+					{<Video videoRef={props.videoRef} stream={videoStream()} autoplay width="100%" />}
+					<Show when={props.availableDevices.length}>
+						<Fab aria-label="flip camera" sx={{ position: "absolute", margin: "20px" }} onClick={flipCamera}>
+							<FlipCameraIosIcon />
+						</Fab>
+					</Show>
+				</Stack>
+			</Match>
+		</Switch>
+	</>;
+}
 
 /** 
  * Props for the {@link CameraVideo} component.
@@ -19,29 +66,24 @@ export interface CameraVideoProps {
  * Display video from a camera.
  * @returns The CameraVideo component.
  */
-export function CameraVideo({ videoRef, onCameraInitialized }: CameraVideoProps) {
-	const [data] = createResource(() => navigator.mediaDevices.getUserMedia({ video: true, audio: false }))
+export function CameraVideo(props: CameraVideoProps) {
 
-	if (onCameraInitialized) {
-		if (data.error) {
-			onCameraInitialized(false);
-		} else if (!data.loading) {
-			onCameraInitialized(true);
-		}
-	}
+	const [availableDevicesResource] = createResource(async () => {
+		const devices = await navigator.mediaDevices.enumerateDevices();
+		const videoDevices = devices.filter(d => d.kind === "videoinput");
+		const videoDevicesIds = videoDevices.map(d => d.deviceId);
+
+		return videoDevicesIds;
+	});
 
 	return <>
-		<Show when={data.error}>
-			<Alert severity="error">Error initializing camera!</Alert>
-		</Show>
-		<Show when={data.loading}>
-			<Stack>
-				<CircularProgress />
-				<Typography>Initializing camera...</Typography>
-			</Stack>
-		</Show>
-		<Show when={!data.loading && !data.error && data() != null}>
-			<Video videoRef={videoRef} stream={data() as any} autoplay width="100%" />
-		</Show>
-	</>
+		<Switch fallback={<Alert severity="error">Error initializing camera!</Alert>}>
+			<Match when={availableDevicesResource.loading}>
+				<TextualSpinner text="Initializing camera..." />
+			</Match>
+			<Match when={true}>
+				<_Video availableDevices={availableDevicesResource()!} videoRef={props.videoRef} onCameraInitialized={e => props.onCameraInitialized?.(e)} />
+			</Match>
+		</Switch>
+	</>;
 }

@@ -1,4 +1,4 @@
-import { Accessor, createEffect, createMemo, createSignal, For, onMount } from "solid-js";
+import { Accessor, createEffect } from "solid-js";
 import { zip } from "../utils";
 import { ProcessingResult } from "../lib/Predictor";
 import Box from "@suid/material/Box";
@@ -16,7 +16,7 @@ export interface DrawImageProps {
  * Draws a image with the bounding boxes.
  * @param param0 Props for the component {@link DrawImage}
  */
-export function DrawImage({ pictureDataUrl, data, minScore }: DrawImageProps) {
+export function DrawImage(props: DrawImageProps) {
 	let canvas: HTMLCanvasElement;
 
 	createEffect(() => {
@@ -27,9 +27,9 @@ export function DrawImage({ pictureDataUrl, data, minScore }: DrawImageProps) {
 		}
 
 		const img = new Image();
-		const min = minScore();
+		const min = props.minScore();
 
-		img.src = pictureDataUrl;
+		img.src = props.pictureDataUrl;
 		img.onload = () => {
 			canvas.width = img.width;
 			canvas.height = img.height;
@@ -39,20 +39,19 @@ export function DrawImage({ pictureDataUrl, data, minScore }: DrawImageProps) {
 			ctx.strokeStyle = "#FF0000";
 			ctx.lineWidth = 2;
 
-			for (const [box, label, score] of zip(data.boxes, data.labels, data.scores)) {
+			for (const [box, label, score] of zip(props.data.boxes, props.data.labels, props.data.scores)) {
 				const [xmin, ymin, xmax, ymax] = box;
 				if (score >= min) {
 					ctx.strokeRect(xmin, ymin, xmax - xmin, ymax - ymin);
 					ctx.fillText(`${label} (${score})`, xmin, ymin);
 				}
 			}
-		}
+		};
 	});
 
 	return <>
-
 		<Box>
 			<canvas ref={el => canvas = el} style={{ width: "100%", height: "100%" }} />
 		</Box>
-	</>
+	</>;
 }

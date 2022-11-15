@@ -1,14 +1,14 @@
 /* @refresh reload */
-import { createTheme, ThemeProvider } from '@suid/material';
-import CssBaseline from '@suid/material/CssBaseline';
-import { render } from 'solid-js/web';
+import { createTheme, ThemeProvider } from "@suid/material";
+import CssBaseline from "@suid/material/CssBaseline";
+import { render } from "solid-js/web";
 
-import './index.css';
-import App from './pages/App';
+import "./index.css";
+import App from "./pages/App";
 
 const theme = createTheme({
 	palette: {
-		mode: 'dark',
+		mode: "dark",
 	}
 });
 
@@ -18,4 +18,4 @@ render(() => <>
 		<CssBaseline />
 		<App />
 	</ThemeProvider>,
-</>, document.getElementById('root') as HTMLElement);
+</>, document.getElementById("root") as HTMLElement);

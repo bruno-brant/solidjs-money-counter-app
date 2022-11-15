@@ -1,14 +1,14 @@
-import Alert from '@suid/material/Alert';
-import Button from '@suid/material/Button';
-import Typography from '@suid/material/Typography';
-import { createSignal, createEffect, onMount, Show } from 'solid-js';
-import { CameraVideo } from './CameraVideo';
-import styles from './ImageCapture.module.scss';
+import Alert from "@suid/material/Alert";
+import Typography from "@suid/material/Typography";
+import { createSignal, Show } from "solid-js";
+import { CameraVideo } from "./CameraVideo";
+import styles from "./ImageCapture.module.scss";
 
-import AddAPhotoIcon from '@suid/icons-material/AddAPhoto';
-import ThumbUpAltIcon from '@suid/icons-material/ThumbUpAlt';
-import RestartAltIcon from '@suid/icons-material/RestartAlt';
-import Stack from '@suid/material/Stack';
+import AddAPhotoIcon from "@suid/icons-material/AddAPhoto";
+import ThumbUpAltIcon from "@suid/icons-material/ThumbUpAlt";
+import RestartAltIcon from "@suid/icons-material/RestartAlt";
+import Stack from "@suid/material/Stack";
+import { MyIconButton } from "./MyIconButton";
 
 /** Possible states of the ImageCapture component. */
 enum ImageCaptureState {
@@ -32,7 +32,7 @@ interface ImageCaptureProps {
 /**
  * Component that allows capturing an image from the camera.
  */
-export function ImageCapture({ onPictureTaken }: ImageCaptureProps) {
+export function ImageCapture(props: ImageCaptureProps) {
 	let videoRef: HTMLVideoElement;
 	let canvasRef: HTMLCanvasElement;
 
@@ -55,15 +55,15 @@ export function ImageCapture({ onPictureTaken }: ImageCaptureProps) {
 		canvasRef.width = videoTrack.getSettings().width ?? 0;
 		canvasRef.height = videoTrack.getSettings().height ?? 0;
 
-		const ctx = canvasRef.getContext('2d');
+		const ctx = canvasRef.getContext("2d");
 		ctx?.drawImage(videoRef, 0, 0, canvasRef.width, canvasRef.height);
 
 		setState(ImageCaptureState.Picture);
 	}
 
 	function confirmButtonClicked() {
-		const dataUrl = canvasRef.toDataURL('image/png');
-		onPictureTaken?.(dataUrl);
+		const dataUrl = canvasRef.toDataURL("image/png");
+		props.onPictureTaken?.(dataUrl);
 		setState(ImageCaptureState.Camera);
 	}
 
@@ -75,12 +75,13 @@ export function ImageCapture({ onPictureTaken }: ImageCaptureProps) {
 	function getStyle(visibleOnState: ImageCaptureState) {
 		return (visibleOnState === state())
 			? {}
-			: { display: 'none' }
+			: { display: "none" };
 	}
 
+	// TODO: Review the divs below
 	return <>
 		<Show when={state() === ImageCaptureState.Error}>
-			<Alert>
+			<Alert severity='error'>
 				<Typography variant='body1'>❌ Error!</Typography>
 			</Alert>
 		</Show>
@@ -93,22 +94,17 @@ export function ImageCapture({ onPictureTaken }: ImageCaptureProps) {
 			<div style={getStyle(ImageCaptureState.Camera)} >
 				<CameraVideo videoRef={el => videoRef = el} onCameraInitialized={cameraInitialized} />
 			</div>
-			<div style={{...getStyle(ImageCaptureState.Picture), width: "100%"}}>
-				<canvas ref={el => canvasRef = el} style={{width: "100%"}} width="100%" />
+			<div style={{ ...getStyle(ImageCaptureState.Picture), width: "100%" }}>
+				<canvas ref={el => canvasRef = el} style={{ width: "100%" }} width="100%" />
 			</div>
 			<div class={styles.controls}>
 				<Show when={state() === ImageCaptureState.Camera}>
-					<Button type='button' variant='contained' onClick={pictureButtonClicked} fullWidth>
-						<Stack direction='row' spacing={1} alignItems='end' justifyContent={'space-between'}>
-							<AddAPhotoIcon fontSize='large' />
-							<Typography variant='h5'>Click!</Typography>
-						</Stack>
-					</Button>
+					<MyIconButton icon={<AddAPhotoIcon fontSize='large' />} text='Click!' onClick={pictureButtonClicked} />
 				</Show>
 				<Show when={state() === ImageCaptureState.Picture}>
 					<Stack direction='row' spacing={2}>
-						<Button variant='contained' onClick={confirmButtonClicked} fullWidth><ThumbUpAltIcon fontSize='large' /></Button>
-						<Button variant='contained' onClick={resetButtonClicked} fullWidth><RestartAltIcon fontSize='large' /></Button>
+						<MyIconButton icon={<ThumbUpAltIcon fontSize='large' />} onClick={confirmButtonClicked} />
+						<MyIconButton icon={<RestartAltIcon fontSize='large' />} onClick={resetButtonClicked} />
 					</Stack>
 				</Show>
 			</div>

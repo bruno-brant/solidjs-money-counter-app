@@ -4,7 +4,7 @@
  * @param value The value to pass to the function.
  */
 export function callOrAssign<T>(fnOrValue: T | ((el: T) => void), value: T): void {
-	if (typeof fnOrValue === 'function') {
+	if (typeof fnOrValue === "function") {
 		(fnOrValue as (el: T) => void)(value);
 	} else {
 		(fnOrValue as T) = value;
@@ -19,7 +19,7 @@ export function callOrAssign<T>(fnOrValue: T | ((el: T) => void), value: T): voi
 export function zip<T1, T2>(a1: T1[], a2: T2[]): Iterable<[T1, T2]>;
 export function zip<T1, T2, T3>(a1: T1[], a2: T2[], a3: T3[]): Iterable<[T1, T2, T3]>;
 export function zip<T1, T2, T3, T4>(a1: T1[], a2: T2[], a3: T3[], a4: T4[]): Iterable<[T1, T2, T3, T4]>;
-export function *zip(...arrays: any[][]): Iterable<any[]> {
+export function *zip(...arrays: unknown[][]): Iterable<unknown[]> {
 	const max = Math.max(...arrays.map(a => a.length));
 	for (let i = 0; i < max; i++) {
 		yield arrays.map(a => a[i]);

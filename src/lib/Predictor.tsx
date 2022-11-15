@@ -25,7 +25,7 @@ export class Predictor {
 			body: JSON.stringify({
 				image: imageBase64
 			}),
-		})
+		});
 
 		if (!result.ok) {
 			throw new Error("Failed to predict the image");

@@ -1,10 +1,10 @@
-import * as solidjs from 'solid-js';
+import * as solidjs from "solid-js";
 
-import Typography from '@suid/material/Typography';
+import Typography from "@suid/material/Typography";
 import Grid from "@suid/material/Grid";
-import Stack from '@suid/material/Stack';
-import useMediaQuery from "@suid/material/useMediaQuery"
-import { Show } from 'solid-js';
+import Stack from "@suid/material/Stack";
+import useMediaQuery from "@suid/material/useMediaQuery";
+import { mergeProps, Show } from "solid-js";
 
 
 /** Props for the component {@link ScoreSlider}. */
@@ -21,30 +21,35 @@ export interface ScoreSliderProps {
  * Presents a slider to select eh minimum score for the bounding boxes.
  * @param param0 The props that controls component behavior.
  */
-export function ScoreSlider({ score: [score, setScore], min = 0.3, max = 0.90 }: ScoreSliderProps) {
+export function ScoreSlider(props: ScoreSliderProps) {
+
+	const merged = mergeProps({ min: 0.3, max: 0.9 }, props);
+
 	function sliderChanged(e: InputEvent) {
 		const target = e.target as HTMLInputElement;
 		const value = target.valueAsNumber;
 
-		if (value > max) {
-			setScore(max);
-		} else if (value < min) {
-			setScore(min);
+		const [, setScore] = merged.score;
+
+		if (value > merged.max) {
+			setScore(merged.max);
+		} else if (value < merged.min) {
+			setScore(merged.min);
 		} else {
 			setScore(value);
 		}
 	}
 
-	const matches = useMediaQuery("(min-width: 400px)");
+	const matches = useMediaQuery("(min-width: 240px)");
 
 	return <>
 		<Stack justifyContent='space-between'>
 			<Grid container alignItems='center' justifyContent='space-between' spacing={1}>
 				<Grid item xs={11} md={11}>
-					<input style={{ width: "100%" }} id="score" type="range" min="0" max="1" step="0.1" value={score().toString()} onInput={sliderChanged} />
+					<input style={{ width: "100%" }} id="score" type="range" min="0" max="1" step="0.1" value={merged.score[0]().toString()} onInput={sliderChanged} />
 				</Grid>
 				<Grid item xs={1} md={1}>
-					<Typography align='right'>{score() * 100}%</Typography>
+					<Typography align='right'>{merged.score[0]() * 100}%</Typography>
 				</Grid>
 			</Grid>
 			<Show when={matches()}>
@@ -53,5 +58,5 @@ export function ScoreSlider({ score: [score, setScore], min = 0.3, max = 0.90 }:
 				</Typography>
 			</Show>
 		</Stack>
-	</>
+	</>;
 }

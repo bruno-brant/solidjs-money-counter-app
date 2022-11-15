@@ -6,23 +6,23 @@ import { callOrAssign } from "../utils";
  */
 type VideoProps = {
 	/** Stream to set the video src to. */
-	stream: MediaStream;
+	stream?: MediaStream;
 	/** Gets a ref to the <video> element. */
 	videoRef: JSX.VideoHTMLAttributes<HTMLVideoElement>["ref"];
 } & JSX.VideoHTMLAttributes<HTMLVideoElement>
 
 /**
  * Facilitator to set a srcObject to a \<video\> element
- * @param {VideoProps} param0 Props for the element 
+ * @param {VideoProps} props Props for the element 
  */
-export function Video({ stream, videoRef, ...otherProps }: VideoProps) {
+export function Video(props: VideoProps) {
 	let myVideoRef: HTMLVideoElement;
-
+	
 	onMount(() => {
-		if (myVideoRef) {
-			myVideoRef.srcObject = stream;
+		if (myVideoRef && props.stream) {
+			myVideoRef.srcObject = props.stream;
 		}
-	})
+	});
 
-	return <video ref={el => { myVideoRef = el; if (videoRef) callOrAssign(videoRef, el); }} {...otherProps} />
+	return <video ref={el => { myVideoRef = el; if (props.videoRef) callOrAssign(props.videoRef, el); }} {...props} />;
 }
