@@ -26,7 +26,6 @@ export function *zip(...arrays: unknown[][]): Iterable<unknown[]> {
 	}
 }
 
-
 /**
  * Sum the values in an array.
  * @param arr The array to sum.
@@ -34,4 +33,19 @@ export function *zip(...arrays: unknown[][]): Iterable<unknown[]> {
  */
 export function sum(arr: number[]): number {
 	return arr.reduce((a, b) => a + b, 0);
+}
+
+/**
+ * Gets the query string as a dictionary.
+ * @returns A dictionary that represents the name/value pairs in the query string.
+ */
+export function getQueryParams() {
+	const params = new URLSearchParams(window.location.search);
+	const result: Record<string, string> = {};
+
+	for (const [key, value] of params) {
+		result[key] = value;
+	}
+
+	return result;
 }

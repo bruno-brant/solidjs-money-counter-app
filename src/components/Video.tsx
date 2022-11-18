@@ -19,8 +19,8 @@ export function Video(props: VideoProps) {
 	const [myVideoRef, setMyVideoRef] = createSignal<HTMLVideoElement>();
 
 	createEffect(() => {
-		console.log("Video: setting videoRef");
 		if (myVideoRef() && props.stream) {
+			console.log("Video: setting videoRef");
 			myVideoRef()!.srcObject = props.stream;
 		}
 	});

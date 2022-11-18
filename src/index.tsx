@@ -2,9 +2,11 @@
 import { createTheme, ThemeProvider } from "@suid/material";
 import CssBaseline from "@suid/material/CssBaseline";
 import { render } from "solid-js/web";
+import { DebugContext } from "./components/Debugging";
 
 import "./index.css";
 import App from "./pages/App";
+import { getQueryParams } from "./utils";
 
 const theme = createTheme({
 	palette: {
@@ -15,9 +17,11 @@ const theme = createTheme({
 function root() {
 	return <>
 		<ThemeProvider theme={theme}>
-			{/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-			<CssBaseline />
-			<App />
+			<DebugContext.Provider value={getQueryParams()["debug"] == "true"}>
+				{/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+				<CssBaseline />
+				<App />
+			</DebugContext.Provider>
 		</ThemeProvider>
 	</>;
 }

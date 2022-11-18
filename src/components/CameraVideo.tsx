@@ -1,27 +1,17 @@
 import Alert from "@suid/material/Alert";
 import Fab from "@suid/material/Fab";
 import Stack from "@suid/material/Stack";
-import { JSX, createResource, Show, Switch, Match, createSignal, } from "solid-js";
+import { JSX, createResource, Show, Switch, Match, createSignal, For, } from "solid-js";
 import { Video } from "./Video";
 import FlipCameraIosIcon from "@suid/icons-material/FlipCameraIos";
 import { TextualSpinner } from "./TextualSpinner";
 import Box from "@suid/material/Box";
+import { DebugBox, DebugContext } from "./Debugging";
 
 interface _VideoProps {
 	availableDevices: string[];
 	videoRef?: JSX.VideoHTMLAttributes<HTMLVideoElement>["ref"];
 	onCameraInitialized?(success: boolean): void;
-}
-
-function getQueryParams() {
-	const params = new URLSearchParams(window.location.search);
-	const result: Record<string, string> = {};
-
-	for (const [key, value] of params) {
-		result[key] = value;
-	}
-
-	return result;
 }
 
 function _CameraVideo(props: _VideoProps) {
@@ -54,18 +44,16 @@ function _CameraVideo(props: _VideoProps) {
 			</Match>
 			<Match when={true}>
 				<Stack justifyContent='end'>
-					{<Video videoRef={props.videoRef} stream={videoStream()} autoplay width="100%" />}
-					<Show when={props.availableDevices.length}>
-						<Fab sx={{ position: "absolute", margin: "20px" }} onClick={() => flipCamera()}>
-							<FlipCameraIosIcon />
-						</Fab>
-						{/* Create a context for debugging */}
-						<Show when={getQueryParams()["debug"] == "true"}>
-							<Box m={1}>
-								<Alert severity="info">Current device: {props.availableDevices[videoDeviceIndex()]}</Alert>
-							</Box>
+					<Box sx={{ position: "relative" }}>
+						<Video videoRef={props.videoRef} stream={videoStream()} autoplay width="100%" />
+						<Show when={props.availableDevices.length}>
+							<Fab sx={{ position: "absolute", right: "5%", bottom: "5%" }} onClick={() => flipCamera()}>
+								<FlipCameraIosIcon />
+							</Fab>
 						</Show>
-					</Show>
+					</Box>
+					{/* Create a context for debugging */}
+					<DebugBox>Current device: {props.availableDevices[videoDeviceIndex()]}</DebugBox>
 				</Stack>
 			</Match>
 		</Switch>
@@ -96,11 +84,19 @@ export function CameraVideo(props: CameraVideoProps) {
 	});
 
 	return <>
-		<Switch fallback={<Alert severity="error">Error initializing camera!</Alert>}>
+		<Switch fallback={<Alert severity="error">Error getting devices!</Alert>}>
 			<Match when={availableDevicesResource.loading}>
-				<TextualSpinner text="Initializing camera..." />
+				<TextualSpinner text="Getting available video devices..." />
 			</Match>
 			<Match when={true}>
+				<DebugBox>
+					Devices:
+					<ul>
+						<For each={availableDevicesResource()}>
+							{device => <li>{device}</li>}
+						</For>
+					</ul>
+				</DebugBox>
 				<_CameraVideo availableDevices={availableDevicesResource()!} videoRef={props.videoRef} onCameraInitialized={e => props.onCameraInitialized?.(e)} />
 			</Match>
 		</Switch>
