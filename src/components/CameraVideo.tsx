@@ -5,6 +5,7 @@ import { JSX, createResource, Show, Switch, Match, createSignal, } from "solid-j
 import { Video } from "./Video";
 import FlipCameraIosIcon from "@suid/icons-material/FlipCameraIos";
 import { TextualSpinner } from "./TextualSpinner";
+import Box from "@suid/material/Box";
 
 interface _VideoProps {
 	availableDevices: string[];
@@ -12,8 +13,19 @@ interface _VideoProps {
 	onCameraInitialized?(success: boolean): void;
 }
 
-function _Video(props: _VideoProps) {
-	const [videoDeviceIndex, setVideoDeviceId] = createSignal(0);
+function getQueryParams() {
+	const params = new URLSearchParams(window.location.search);
+	const result: Record<string, string> = {};
+
+	for (const [key, value] of params) {
+		result[key] = value;
+	}
+
+	return result;
+}
+
+function _CameraVideo(props: _VideoProps) {
+	const [videoDeviceIndex, setVideoDeviceIndex] = createSignal(0);
 
 	const [videoStream] = createResource(videoDeviceIndex, async (deviceIndex) => {
 		console.log("Getting video stream for device", deviceIndex);
@@ -30,21 +42,29 @@ function _Video(props: _VideoProps) {
 	});
 
 	async function flipCamera() {
-		setVideoDeviceId(idx => idx + 1 % props.availableDevices.length);
+		console.info(`Flipping camera from ${videoDeviceIndex()}...`);
+		setVideoDeviceIndex(idx => idx + 1 % props.availableDevices.length);
+		console.info(`... to ${videoDeviceIndex()}`);
 	}
 
 	return <>
 		<Switch fallback={<Alert severity="error">Error initializing camera!</Alert>}>
 			<Match when={videoStream.loading}>
-				<TextualSpinner text="Initializing camera..."/>
+				<TextualSpinner text="Initializing camera..." />
 			</Match>
 			<Match when={true}>
 				<Stack justifyContent='end'>
 					{<Video videoRef={props.videoRef} stream={videoStream()} autoplay width="100%" />}
 					<Show when={props.availableDevices.length}>
-						<Fab aria-label="flip camera" sx={{ position: "absolute", margin: "20px" }} onClick={flipCamera}>
+						<Fab sx={{ position: "absolute", margin: "20px" }} onClick={() => flipCamera()}>
 							<FlipCameraIosIcon />
 						</Fab>
+						{/* Create a context for debugging */}
+						<Show when={getQueryParams()["debug"] == "true"}>
+							<Box m={1}>
+								<Alert severity="info">Current device: {props.availableDevices[videoDeviceIndex()]}</Alert>
+							</Box>
+						</Show>
 					</Show>
 				</Stack>
 			</Match>
@@ -67,7 +87,6 @@ export interface CameraVideoProps {
  * @returns The CameraVideo component.
  */
 export function CameraVideo(props: CameraVideoProps) {
-
 	const [availableDevicesResource] = createResource(async () => {
 		const devices = await navigator.mediaDevices.enumerateDevices();
 		const videoDevices = devices.filter(d => d.kind === "videoinput");
@@ -82,8 +101,9 @@ export function CameraVideo(props: CameraVideoProps) {
 				<TextualSpinner text="Initializing camera..." />
 			</Match>
 			<Match when={true}>
-				<_Video availableDevices={availableDevicesResource()!} videoRef={props.videoRef} onCameraInitialized={e => props.onCameraInitialized?.(e)} />
+				<_CameraVideo availableDevices={availableDevicesResource()!} videoRef={props.videoRef} onCameraInitialized={e => props.onCameraInitialized?.(e)} />
 			</Match>
 		</Switch>
+
 	</>;
 }
