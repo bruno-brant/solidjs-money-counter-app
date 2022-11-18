@@ -1,4 +1,4 @@
-import { JSX, onMount } from "solid-js";
+import { createEffect, createSignal, JSX } from "solid-js";
 import { callOrAssign } from "../utils";
 
 /**
@@ -16,13 +16,14 @@ type VideoProps = {
  * @param {VideoProps} props Props for the element 
  */
 export function Video(props: VideoProps) {
-	let myVideoRef: HTMLVideoElement;
-	
-	onMount(() => {
-		if (myVideoRef && props.stream) {
-			myVideoRef.srcObject = props.stream;
+	const [myVideoRef, setMyVideoRef] = createSignal<HTMLVideoElement>();
+
+	createEffect(() => {
+		console.log("Video: setting videoRef");
+		if (myVideoRef() && props.stream) {
+			myVideoRef()!.srcObject = props.stream;
 		}
 	});
 
-	return <video ref={el => { myVideoRef = el; if (props.videoRef) callOrAssign(props.videoRef, el); }} {...props} />;
+	return <video ref={el => { setMyVideoRef(el); if (props.videoRef) callOrAssign(props.videoRef, el); }} {...props} />;
 }
