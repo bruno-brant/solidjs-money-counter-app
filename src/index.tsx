@@ -12,10 +12,14 @@ const theme = createTheme({
 	}
 });
 
-render(() => <>
-	<ThemeProvider theme={theme}>
-		{/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-		<CssBaseline />
-		<App />
-	</ThemeProvider>,
-</>, document.getElementById("root") as HTMLElement);
+function root() {
+	return <>
+		<ThemeProvider theme={theme}>
+			{/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+			<CssBaseline />
+			<App />
+		</ThemeProvider>
+	</>;
+}
+
+render(root, document.getElementById("root") as HTMLElement);
