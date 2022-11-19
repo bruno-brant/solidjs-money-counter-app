@@ -11,9 +11,9 @@ import { Home } from "./Home";
 function CustomAppBar() {
 	return <>
 		<AppBar>
-			<Box sx={{ mx: 4 }}>
-				<Stack direction="row" alignItems="center">
-					<Typography variant="h6">Moedeiro</Typography>&nbsp;<Toll />
+			<Box id="AppBarBox" sx={{ mx: 4, width: "100%", height: "100%" }}>
+				<Stack direction="row" alignItems="center" spacing={1}>
+					<Typography variant="h6">Moedeiro</Typography><Toll />{" "}<Typography color="secondary" variant="caption" >BETA</Typography>
 				</Stack>
 			</Box>
 		</AppBar>

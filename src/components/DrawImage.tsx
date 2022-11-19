@@ -1,6 +1,5 @@
-import { Accessor, createEffect } from "solid-js";
-import { zip } from "../utils";
-import { ProcessingResult } from "../lib/Predictor";
+import { Accessor, createEffect, For } from "solid-js";
+import { DetectedCoin } from "../lib/Predictor";
 import Box from "@suid/material/Box";
 
 /** 
@@ -8,8 +7,7 @@ import Box from "@suid/material/Box";
  */
 export interface DrawImageProps {
 	pictureDataUrl: string;
-	data: ProcessingResult
-	minScore: Accessor<number>;
+	coins: Accessor<DetectedCoin[]>
 }
 
 /**
@@ -20,16 +18,16 @@ export function DrawImage(props: DrawImageProps) {
 	let canvas: HTMLCanvasElement;
 
 	createEffect(() => {
+		console.log("Drawing bounding boxes...");
 		const ctx = canvas.getContext("2d");
 
-		if (!ctx) {
-			throw new Error("Can't load canvas context");
-		}
+		if (!ctx) throw new Error("Can't load canvas context");
 
 		const img = new Image();
-		const min = props.minScore();
-
 		img.src = props.pictureDataUrl;
+
+		const coins = props.coins();
+
 		img.onload = () => {
 			canvas.width = img.width;
 			canvas.height = img.height;
@@ -38,15 +36,24 @@ export function DrawImage(props: DrawImageProps) {
 
 			ctx.strokeStyle = "#FF0000";
 			ctx.lineWidth = 2;
+			ctx.fillStyle = "#FF000030";
 
-			for (const [box, label, score] of zip(props.data.boxes, props.data.labels, props.data.scores)) {
-				const [xmin, ymin, xmax, ymax] = box;
-				if (score >= min) {
-					ctx.strokeRect(xmin, ymin, xmax - xmin, ymax - ymin);
-					ctx.fillText(`${label} (${score})`, xmin, ymin);
-				}
+			for (const {boundingBox, value} of coins) {
+				const [xmin, ymin, xmax, ymax] = [...boundingBox.topLeft, ...boundingBox.bottomRight];
+				
+				ctx.strokeRect(xmin, ymin, xmax - xmin, ymax - ymin);
+				ctx.fillRect(xmin, ymin, xmax - xmin, ymax - ymin);
+				// Draw the value inside the image, centered
+				// Define the font size based on the size of the bounding box
+				ctx.font = `${Math.min(xmax - xmin, ymax - ymin) / 2}px Arial`;
+				ctx.fillStyle = "#FF0000";
+				ctx.textAlign = "center";
+				// Align vertically the text in the middle of the bounding box
+				ctx.textBaseline = "middle";
+				ctx.fillText(value.toString(), (xmin + xmax) / 2, ((ymin + ymax) / 2) * 1.005);
 			}
 		};
+		console.log("Done drawing bounding boxes...");
 	});
 
 	return <>

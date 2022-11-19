@@ -12,7 +12,7 @@ export interface DebugBoxProps {
 	/**
 	 * Elements to display in case of debugging mode.
 	 */
-	children: JSX.Element;
+	children?: JSX.Element;
 }
 
 /**
@@ -28,9 +28,11 @@ export function DebugBox(props: DebugBoxProps) {
 			<Show when={props.message}>
 				<Alert severity="info">{props.message}</Alert>
 			</Show>
-			<div style={{ "background-color": "grey", border: "5 solid black", padding: "10px" }}>
-				{props.children}
-			</div>
+			<Show when={props.children}>
+				<div style={{ "background-color": "grey", border: "5 solid black", padding: "10px" }}>
+					{props.children}
+				</div>
+			</Show>
 		</Show>
 	</>;
 }
