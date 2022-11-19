@@ -9,6 +9,8 @@ type VideoProps = {
 	stream?: MediaStream;
 	/** Gets a ref to the <video> element. */
 	videoRef: JSX.VideoHTMLAttributes<HTMLVideoElement>["ref"];
+	/** Called when the video has been initialized */
+	onInitialized?: (success: boolean) => void;
 } & JSX.VideoHTMLAttributes<HTMLVideoElement>
 
 /**
@@ -22,6 +24,7 @@ export function Video(props: VideoProps) {
 		if (myVideoRef() && props.stream) {
 			console.log("Video: setting videoRef");
 			myVideoRef()!.srcObject = props.stream;
+			props.onInitialized?.(true);
 		}
 	});
 
