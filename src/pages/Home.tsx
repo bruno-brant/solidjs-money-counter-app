@@ -1,6 +1,6 @@
 import { createMemo, createResource, createSignal, Match, Show, Switch } from "solid-js";
 import { ImageCapture } from "../components/ImageCapture";
-import { DrawImage } from "../components/DrawImage";
+import { BoundingBox, OverlayedImage } from "../components/OverlayedImage";
 import { ImageDetails } from "../components/ImageDetails";
 import { Predictor } from "../lib/Predictor";
 import { ScoreSlider } from "../components/ScoreSlider";
@@ -45,13 +45,21 @@ export function Home() {
 		if (!detectionResult()) return [];
 
 		console.log(`Beforing filtering: ${detectionResult()!.data.coins.length} coins`);
-		
+
 		const filtered = detectionResult()!.data.coins.filter(_ => _.score >= minScore());
-		
+
 		console.log(`After filtering: ${filtered.length} coins with score >= ${minScore()}`);
-		
+
 		return filtered;
 	});
+
+	function OverlayedImageBoundingBoxes(): BoundingBox[] {
+		return coins().map(_ => ({
+			text: _.value.toFixed(2),
+			topLeft: _.boundingBox.topLeft,
+			bottomRight: _.boundingBox.bottomRight,
+		}));
+	}
 
 	return <>
 		<DebugBox message={`URL: ${import.meta.env.VITE_BACKEND_BASE_URL}`} />
@@ -65,7 +73,7 @@ export function Home() {
 				</Match>
 				<Match when={detectionResult.state === "ready"}>
 					<Stack spacing={1}>
-						<DrawImage pictureDataUrl={picture()!} coins={coins} />
+						<OverlayedImage src={picture()!} boundingBoxes={OverlayedImageBoundingBoxes()} />
 						<ScoreSlider score={minScore} setScore={setMinScore} />
 						<ImageDetails coins={coins()} />
 						<MyIconButton icon={<AddAPhotoIcon fontSize="large" />} onClick={() => setState(HomeState.Capture)} text="Tirar outra!" />
