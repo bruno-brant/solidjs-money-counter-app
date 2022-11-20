@@ -9,6 +9,7 @@ import Stack from "@suid/material/Stack";
 import AddAPhotoIcon from "@suid/icons-material/AddAPhoto";
 import { MyIconButton } from "../components/MyIconButton";
 import { DebugBox } from "../components/Debugging";
+import { TextualSpinner } from "../components/TextualSpinner";
 
 /**
  * Possible states of the {@link Home} component.
@@ -34,7 +35,7 @@ export function Home() {
 		if (!pic) throw new Error("picture is null or undefined, can't process");
 
 		const base64 = pic.split(",")[1];
-		setMinScore(0.5);
+		setMinScore(0.7);
 		return await predictor.process(base64);
 	});
 
@@ -67,7 +68,7 @@ export function Home() {
 			<ImageCapture onPictureTaken={pictureTaken} />
 		</Show>
 		<Show when={state() === HomeState.Result}>
-			<Switch fallback={<span>⏳ Processing picture...</span>}>
+			<Switch fallback={<TextualSpinner text="Processing picture..." />}>
 				<Match when={detectionResult.state === "errored"}>
 					<Alert severity='error'>Failed to process picture {detectionResult.error.match ? ":" : ""}{detectionResult.error.match}</Alert>
 				</Match>
