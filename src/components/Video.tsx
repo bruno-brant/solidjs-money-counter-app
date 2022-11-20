@@ -21,11 +21,21 @@ export function Video(props: VideoProps) {
 	const [myVideoRef, setMyVideoRef] = createSignal<HTMLVideoElement>();
 
 	createEffect(() => {
-		if (myVideoRef() && props.stream) {
-			console.log("Video: setting videoRef");
-			myVideoRef()!.srcObject = props.stream;
-			props.onInitialized?.(true);
+		const videoRef = myVideoRef();
+
+		if (!(videoRef && props.stream)) return;
+
+		console.log("Video: setting videoRef");
+
+		if (videoRef.srcObject) {
+			console.log("Video: clearing videoRef");
+			const mediaStream = videoRef.srcObject as MediaStream;
+			mediaStream.getTracks().forEach(track => track.stop());
 		}
+
+		videoRef.srcObject = props.stream;
+
+		props.onInitialized?.(true);
 	});
 
 	return <video ref={el => { setMyVideoRef(el); if (props.videoRef) callOrAssign(props.videoRef, el); }} {...props} />;
