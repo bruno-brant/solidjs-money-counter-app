@@ -9,15 +9,17 @@ import ThumbUpAltIcon from "@suid/icons-material/ThumbUpAlt";
 import RestartAltIcon from "@suid/icons-material/RestartAlt";
 import Stack from "@suid/material/Stack";
 import { MyIconButton } from "./MyIconButton";
+import { TextualSpinner } from "./TextualSpinner";
 
 /** Possible states of the ImageCapture component. */
 enum ImageCaptureState {
-	/** Camera is ready to be used */
+	/** Camera is ready to be used. */
 	Camera,
-	/** Picture was taken */
+	/** Picture was taken. */
 	Picture,
-	/** Error initializing the camer */
-	Error
+	/** Error initializing the camera. */
+	Error,
+	Initializing
 }
 
 /** Props for the {@link ImageCapture} component. */
@@ -36,7 +38,7 @@ export function ImageCapture(props: ImageCaptureProps) {
 	let videoRef: HTMLVideoElement;
 	let canvasRef: HTMLCanvasElement;
 
-	const [state, setState] = createSignal(ImageCaptureState.Camera);
+	const [state, setState] = createSignal(ImageCaptureState.Initializing);
 
 	function cameraInitialized(success: boolean) {
 		if (success) {
@@ -46,7 +48,7 @@ export function ImageCapture(props: ImageCaptureProps) {
 		}
 	}
 
-	function pictureButtonClicked() {
+	function takePictureButtonClicked() {
 		videoRef.pause();
 
 		const mediaStream = videoRef.srcObject as MediaStream;
@@ -85,6 +87,9 @@ export function ImageCapture(props: ImageCaptureProps) {
 				<Typography variant='body1'>❌ Error!</Typography>
 			</Alert>
 		</Show>
+		<Show when={state() === ImageCaptureState.Initializing}>
+			<TextualSpinner text="Initializing camera..." />
+		</Show>
 		<Show when={state() !== ImageCaptureState.Error}>
 			{/* 
 				Can't use show below because we need to hook the ref in canvas and CameraVideo simultaneously.
@@ -99,7 +104,7 @@ export function ImageCapture(props: ImageCaptureProps) {
 			</div>
 			<div class={styles.controls}>
 				<Show when={state() === ImageCaptureState.Camera}>
-					<MyIconButton icon={<AddAPhotoIcon fontSize='large' />} text='Click!' onClick={pictureButtonClicked} />
+					<MyIconButton icon={<AddAPhotoIcon fontSize='large' />} text='Click!' onClick={takePictureButtonClicked} />
 				</Show>
 				<Show when={state() === ImageCaptureState.Picture}>
 					<Stack direction='row' spacing={2}>
