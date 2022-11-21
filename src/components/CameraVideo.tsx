@@ -40,6 +40,12 @@ function _CameraVideo(props: _VideoProps) {
 	const debug = useContext(DebugContext);
 
 	async function flipCamera() {
+		// Stop before changing the facing mode
+		if (videoStream && videoStream.state == "ready") {
+			console.log(`Stopping previous video stream (${facingMode()})`);
+			videoStream().getTracks().forEach(track => track.stop());
+		}
+		
 		setFacingMode(mode => mode === FacingMode.Environment
 			? FacingMode.User
 			: FacingMode.Environment);

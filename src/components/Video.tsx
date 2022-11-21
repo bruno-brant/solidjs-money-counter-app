@@ -27,12 +27,6 @@ export function Video(props: VideoProps) {
 
 		console.log("Video: setting videoRef");
 
-		if (videoRef.srcObject) {
-			console.log("Video: clearing videoRef");
-			const mediaStream = videoRef.srcObject as MediaStream;
-			mediaStream.getTracks().forEach(track => track.stop());
-		}
-
 		videoRef.srcObject = props.stream;
 
 		props.onInitialized?.(true);
