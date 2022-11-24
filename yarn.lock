@@ -410,6 +410,11 @@
     estree-walker "^2.0.1"
     picomatch "^2.2.2"
 
+"@solidjs/router@^0.5.1":
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/@solidjs/router/-/router-0.5.1.tgz#037b4923b4207f9fb6c09579995e98121977173e"
+  integrity sha512-igyrwUqm/9T26Lb6l7oXwpc4lLUVqbhbN92wOL3NgLoLVmkQlUNTZciuAe+Su8XeJXlrWjl6oxDJDLt+6pws/g==
+
 "@suid/base@0.3.2":
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/@suid/base/-/base-0.3.2.tgz#3698d20a18934d331c027a2b82caae0a7be29309"

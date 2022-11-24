@@ -8,8 +8,8 @@ import AddAPhotoIcon from "@suid/icons-material/AddAPhoto";
 import ThumbUpAltIcon from "@suid/icons-material/ThumbUpAlt";
 import RestartAltIcon from "@suid/icons-material/RestartAlt";
 import Stack from "@suid/material/Stack";
-import { MyIconButton } from "./MyIconButton";
-import { TextualSpinner } from "./TextualSpinner";
+import { MyIconButton } from "../../components/MyIconButton";
+import { TextualSpinner } from "../../components/TextualSpinner";
 
 /** Possible states of the ImageCapture component. */
 enum ImageCaptureState {
@@ -40,6 +40,8 @@ export function ImageCapture(props: ImageCaptureProps) {
 
 	const [state, setState] = createSignal(ImageCaptureState.Initializing);
 
+	const [isPaused, setIsPaused] = createSignal(false);
+
 	function cameraInitialized(success: boolean) {
 		if (success) {
 			setState(ImageCaptureState.Camera);
@@ -49,7 +51,7 @@ export function ImageCapture(props: ImageCaptureProps) {
 	}
 
 	function takePictureButtonClicked() {
-		videoRef.pause();
+		setIsPaused(true);
 
 		const mediaStream = videoRef.srcObject as MediaStream;
 		const videoTrack = mediaStream.getVideoTracks()[0];
@@ -67,10 +69,16 @@ export function ImageCapture(props: ImageCaptureProps) {
 		const dataUrl = canvasRef.toDataURL("image/png");
 		props.onPictureTaken?.(dataUrl);
 		setState(ImageCaptureState.Camera);
+		
+		const mediaStream = videoRef.srcObject as MediaStream;
+		
+		for (const track of mediaStream.getVideoTracks()){
+			track.stop();
+		}
 	}
 
 	function resetButtonClicked() {
-		videoRef.play();
+		setIsPaused(false);
 		setState(ImageCaptureState.Camera);
 	}
 
@@ -88,7 +96,7 @@ export function ImageCapture(props: ImageCaptureProps) {
 			</Alert>
 		</Show>
 		<Show when={state() === ImageCaptureState.Initializing}>
-			<TextualSpinner text="Initializing camera..." />
+			<TextualSpinner text="Iniciando a câmera..." />
 		</Show>
 		<Show when={state() !== ImageCaptureState.Error}>
 			{/* 
@@ -97,7 +105,7 @@ export function ImageCapture(props: ImageCaptureProps) {
 				So we just hide one of them from the DOM but still render it.
 			*/}
 			<div style={getStyle(ImageCaptureState.Camera)} >
-				<CameraVideo videoRef={el => videoRef = el} onCameraInitialized={cameraInitialized} />
+				<CameraVideo videoRef={el => videoRef = el} onCameraInitialized={cameraInitialized} isPaused={isPaused()} />
 			</div>
 			<div style={{ ...getStyle(ImageCaptureState.Picture), width: "100%" }}>
 				<canvas ref={el => canvasRef = el} style={{ width: "100%" }} width="100%" />

@@ -1,4 +1,5 @@
 /* @refresh reload */
+import { Router } from "@solidjs/router";
 import { createTheme, ThemeProvider } from "@suid/material";
 import CssBaseline from "@suid/material/CssBaseline";
 import { render } from "solid-js/web";
@@ -20,7 +21,9 @@ function root() {
 			<DebugContext.Provider value={getQueryParams()["debug"] == "true"}>
 				{/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
 				<CssBaseline />
-				<App />
+				<Router>
+					<App />
+				</Router>
 			</DebugContext.Provider>
 		</ThemeProvider>
 	</>;

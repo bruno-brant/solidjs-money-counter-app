@@ -1,3 +1,5 @@
+import { timeout } from "../utils";
+
 export interface DetectedCoin {
 	/** Percentage of confidence in the result */
 	score: number;
@@ -58,6 +60,12 @@ export class Predictor {
 	 */
 	constructor(private baseUrl: string) { }
 
+	/**
+	 * Process an image and gets the detected coins.
+	 * @param imageBase64 The base64 encoded image to process.
+	 * @returns Asyncronously returns the result of the prediction.
+	 */
+	@timeout(10_000)
 	public async process(imageBase64: string): Promise<ProcessingResult> {
 		const result = await fetch(`${this.baseUrl}/v1/predict`, {
 			method: "POST",

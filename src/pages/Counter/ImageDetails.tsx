@@ -1,6 +1,6 @@
 import { createSignal, For, JSX, Show } from "solid-js";
-import { DetectedCoin } from "../lib/Predictor";
-import { sum } from "../utils";
+import { DetectedCoin } from "../../lib/Predictor";
+import { sum } from "../../utils";
 
 import Paper from "@suid/material/Paper";
 import Table from "@suid/material/Table";

@@ -1,86 +1,58 @@
-import { createMemo, createResource, createSignal, Match, Show, Switch } from "solid-js";
-import { ImageCapture } from "../components/ImageCapture";
-import { BoundingBox, OverlayedImage } from "../components/OverlayedImage";
-import { ImageDetails } from "../components/ImageDetails";
-import { Predictor } from "../lib/Predictor";
-import { ScoreSlider } from "../components/ScoreSlider";
-import Alert from "@suid/material/Alert";
+import Typography from "@suid/material/Typography";
+import Box from "@suid/material/Box";
+import Container from "@suid/material/Container";
 import Stack from "@suid/material/Stack";
-import AddAPhotoIcon from "@suid/icons-material/AddAPhoto";
-import { MyIconButton } from "../components/MyIconButton";
-import { DebugBox } from "../components/Debugging";
-import { TextualSpinner } from "../components/TextualSpinner";
-
-/**
- * Possible states of the {@link Home} component.
- */
-enum HomeState {
-	/** Capturing a picture */
-	Capture,
-	/** Result of the picture */
-	Result
-}
+import Paper from "@suid/material/Paper";
+import Alert from "@suid/material/Alert";
+import Button from "@suid/material/Button";
+import { useNavigate } from "@solidjs/router";
+import useMediaQuery from "@suid/material/useMediaQuery";
 
 export function Home() {
-	const [state, setState] = createSignal(HomeState.Capture);
-	const [picture, setPicture] = createSignal<string | null>(null);
-	const predictor = new Predictor(import.meta.env.VITE_BACKEND_BASE_URL);
 
-	function pictureTaken(picture: string) {
-		setPicture(picture);
-		setState(HomeState.Result);
-	}
+	const navigate = useNavigate();
 
-	const [detectionResult] = createResource(picture, async (pic) => {
-		if (!pic) throw new Error("picture is null or undefined, can't process");
+	const minWidth600 = useMediaQuery("(min-width: 600px)");
 
-		const base64 = pic.split(",")[1];
-		setMinScore(0.7);
-		return await predictor.process(base64);
-	});
+	const maxWidth = () => minWidth600() ? "50vw" : "80vw";
 
-	// The minimum score to consider a coin
-	const [minScore, setMinScore] = createSignal(0.5);
+	// Position a Paper component in the middle of the screen
+	return <Box sx={{ height: "100vh" }}>
+		<Container sx={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+			<Paper sx={{ p: 4, maxWidth: maxWidth() }} elevation={4}>
+				<Stack direction="column" spacing={2} alignItems="center">
+					<Typography variant="h4" component="h1" gutterBottom>
+						Bem vindo!
+					</Typography>
+					<Typography variant="body1" component="p">
+						Criamos Moedeiro para nos auxiliar na chata tarefa de contar moedas.
+						Basta tirar uma foto delas, e a IA faz todo o trabalho de contá-las!
+					</Typography>
+					<Typography variant="body1" component="p">
+						Prefira tirar de cima das moedas, com bom foco, e com uma boa iluminação.
+						Prefira também um fundo "uniforme", como uma mesa ou um papel branco.
+					</Typography>
+					<Alert severity="info">
+						<Typography variant="body1" component="p" textAlign="justify">
+							Aviso de Beta
+						</Typography>
+						<Stack direction="column" spacing={2} alignItems="center" padding={1}>
+							<Typography variant="body2" component="p" textAlign="justify">
+								Moedeiro é um software BETA, e pode apresentar bugs.
+								Nem sempre as moedas compreendidas por completo, e podem ser contadas incorretamente.
+							</Typography>
+							<Typography variant="body2" component="p" textAlign="justify">
+								Nossa IA ainda está aprendendo e melhorando, e você pode ajudar!
+								Envie-nos fotos de moedas que não foram contadas corretamente, e nós iremos treiná-la.
+							</Typography>
+						</Stack>
+					</Alert>
+					<Button variant="contained" color="primary" onClick={() => navigate("/counter")}>
+						Começar!
+					</Button>
+				</Stack>
+			</Paper>
+		</Container>
+	</Box>;
 
-	const coins = createMemo(() => {
-		if (!detectionResult()) return [];
-
-		console.log(`Beforing filtering: ${detectionResult()!.data.coins.length} coins`);
-
-		const filtered = detectionResult()!.data.coins.filter(_ => _.score >= minScore());
-
-		console.log(`After filtering: ${filtered.length} coins with score >= ${minScore()}`);
-
-		return filtered;
-	});
-
-	function OverlayedImageBoundingBoxes(): BoundingBox[] {
-		return coins().map(_ => ({
-			text: _.value.toFixed(2),
-			topLeft: _.boundingBox.topLeft,
-			bottomRight: _.boundingBox.bottomRight,
-		}));
-	}
-
-	return <>
-		<DebugBox message={`URL: ${import.meta.env.VITE_BACKEND_BASE_URL}`} />
-		<Show when={state() === HomeState.Capture}>
-			<ImageCapture onPictureTaken={pictureTaken} />
-		</Show>
-		<Show when={state() === HomeState.Result}>
-			<Switch fallback={<TextualSpinner text="Processing picture..." />}>
-				<Match when={detectionResult.state === "errored"}>
-					<Alert severity='error'>Failed to process picture {detectionResult.error.match ? ":" : ""}{detectionResult.error.match}</Alert>
-				</Match>
-				<Match when={detectionResult.state === "ready"}>
-					<Stack spacing={1}>
-						<OverlayedImage src={picture()!} boundingBoxes={OverlayedImageBoundingBoxes()} />
-						<ScoreSlider score={minScore} setScore={setMinScore} />
-						<ImageDetails coins={coins()} />
-						<MyIconButton icon={<AddAPhotoIcon fontSize="large" />} onClick={() => setState(HomeState.Capture)} text="Tirar outra!" />
-					</Stack>
-				</Match>
-			</Switch>
-		</Show>
-	</>;
 }

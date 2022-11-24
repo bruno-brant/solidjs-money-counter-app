@@ -5,8 +5,10 @@ import AppBar from "@suid/material/AppBar";
 import Stack from "@suid/material/Stack";
 import { Toll } from "@suid/icons-material";
 
+import { Counter } from "./Counter";
+import { Route, Routes } from "@solidjs/router";
+import { NotFound } from "./NotFound";
 import { Home } from "./Home";
-
 
 function CustomAppBar() {
 	return <>
@@ -19,12 +21,17 @@ function CustomAppBar() {
 		</AppBar>
 	</>;
 }
+
 function App() {
 	return <>
 		<Container maxWidth="md">
 			<CustomAppBar />
 			<Box sx={{ my: 6 }}>
-				<Home />
+				<Routes>
+					<Route path="/" element={<Home />} />
+					<Route path="/counter" element={<Counter />} />
+					<Route path="*" element={<NotFound />} />
+				</Routes>
 			</Box>
 		</Container>
 	</>;

@@ -1,15 +1,16 @@
+import { JSX, createResource, Show, Switch, Match, createSignal, useContext } from "solid-js";
+
 import Alert from "@suid/material/Alert";
 import Fab from "@suid/material/Fab";
 import Stack from "@suid/material/Stack";
-import { JSX, createResource, Show, Switch, Match, createSignal, useContext } from "solid-js";
-import { Video } from "./Video";
-import FlipCameraIosIcon from "@suid/icons-material/FlipCameraIos";
-import { TextualSpinner } from "./TextualSpinner";
 import Box from "@suid/material/Box";
-import { DebugBox, DebugContext } from "./Debugging";
-import { AutoTable } from "./AutoTable";
+import FlipCameraIosIcon from "@suid/icons-material/FlipCameraIos";
 
+import { AutoTable, DebugBox, DebugContext, TextualSpinner, Video } from "../../components";
+
+/** Props for {@link _CameraVideo} component. */
 interface _VideoProps {
+	isPaused: boolean;
 	videoInputDevices: MediaDeviceInfo[];
 	videoRef?: JSX.VideoHTMLAttributes<HTMLVideoElement>["ref"];
 	onCameraInitialized?(success: boolean): void;
@@ -45,21 +46,25 @@ function _CameraVideo(props: _VideoProps) {
 			console.log(`Stopping previous video stream (${facingMode()})`);
 			videoStream().getTracks().forEach(track => track.stop());
 		}
-		
+
 		setFacingMode(mode => mode === FacingMode.Environment
 			? FacingMode.User
 			: FacingMode.Environment);
 	}
 
 	return <>
-		<Switch fallback={<Alert severity="error">Error initializing camera!</Alert>}>
+		<Switch fallback={<Alert severity="error">Erro iniciando a câmera!</Alert>}>
 			<Match when={videoStream.loading}>
-				<TextualSpinner text="Initializing camera..." />
+				<TextualSpinner text="Iniciando a câmera..." />
 			</Match>
 			<Match when={true}>
 				<Stack justifyContent='end'>
 					<Box sx={{ position: "relative" }}>
-						<Video videoRef={props.videoRef} stream={videoStream()} autoplay width="100%" onInitialized={success => props.onCameraInitialized?.(success)} />
+						<Video
+							videoRef={props.videoRef}
+							stream={videoStream()} autoplay width="100%"
+							isPaused={props.isPaused}
+							onInitialized={success => props.onCameraInitialized?.(success)} />
 						<Show when={debug || props.videoInputDevices.length > 1}>
 							<Fab sx={{ position: "absolute", right: "5%", bottom: "5%" }} onClick={() => flipCamera()}>
 								<FlipCameraIosIcon />
@@ -80,6 +85,8 @@ export interface CameraVideoProps {
 	videoRef?: JSX.VideoHTMLAttributes<HTMLVideoElement>["ref"];
 	/** Informs the result of camera initalization. */
 	onCameraInitialized?(success: boolean): void;
+	/** Whether the video stream is paused or not. */
+	isPaused: boolean;
 }
 
 /**
@@ -118,7 +125,11 @@ export function CameraVideo(props: CameraVideoProps) {
 				<TextualSpinner text="Getting available video devices..." />
 			</Match>
 			<Match when={true}>
-				<_CameraVideo videoInputDevices={availableDevicesResource()!.filter(_ => _.kind == "videoinput")} videoRef={props.videoRef} onCameraInitialized={e => props.onCameraInitialized?.(e)} />
+				<_CameraVideo
+					videoInputDevices={availableDevicesResource()!.filter(_ => _.kind == "videoinput")}
+					videoRef={props.videoRef}
+					onCameraInitialized={e => props.onCameraInitialized?.(e)}
+					isPaused={props.isPaused} />
 			</Match>
 		</Switch>
 
