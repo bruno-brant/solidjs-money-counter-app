@@ -1,0 +1,52 @@
+﻿DreamsForge Privacy Policy
+
+This Privacy Policy describes how your personal information is collected, used,
+and shared when you visit www.moedeiro.com.br (the “Site”) or access the 
+Moedeiro Play Store application (the “App”).
+
+PERSONAL INFORMATION WE COLLECT
+
+When you visit the Site or App, we don't automatically collect any information
+about your device. The only information collected is the photos you upload to
+the Site or App to be identified. This information is processed ephemeraly and
+is not stored in any database.
+
+You can also choose to donate the photo to the Moedeiro project, in which case
+the photo will be stored in our database and will be used to train our algori-
+thms. In this case, the photo will be stored in our database for an indefinite 
+period of time. The photo is collected anonymously, without any personal infor-
+mation. The only information collected is the photo itself.
+
+When we talk about “Personal Information” in this Privacy Policy, we are talking
+about the photos you upload to the Site or App.
+
+HOW DO WE USE YOUR PERSONAL INFORMATION?
+
+We use the Personal Information that we collect to provide the service and iden-
+tify the coins in the photos you upload to the Site or App.
+
+DO NOT TRACK
+
+Please note that we do not alter our Site’s data collection and use practices
+when we see a Do Not Track signal from your browser.
+
+DATA RETENTION
+
+When you upload a photo to the Site or App, the photo is processed ephemeraly
+and is not stored in any database. If you choose to donate the photo to the
+Moedeiro project, the photo will be stored in our database and will be used to
+train our algorithms. In this case, the photo will be stored in our database for
+an indefinite period of time. The photo is collected anonymously, without any 
+personal information. The only information collected is the photo itself.
+
+CHANGES
+
+We may update this privacy policy from time to time in order to reflect, for 
+example, changes to our practices or for other operational, legal or regulatory
+reasons.
+
+CONTACT US
+
+For more information about our privacy practices, if you have questions, or if 
+you would like to make a complaint, please contact us by e-mail at 
+admin@moedeiro.com.br.
