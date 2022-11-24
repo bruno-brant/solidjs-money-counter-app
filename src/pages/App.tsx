@@ -8,7 +8,7 @@ import { Toll } from "@suid/icons-material";
 import { Counter } from "./Counter";
 import { Route, Routes } from "@solidjs/router";
 import { NotFound } from "./NotFound";
-import { Home } from "./Home";
+import { Home } from "./Home/Home";
 
 function CustomAppBar() {
 	return <>
