@@ -36,7 +36,7 @@ export function Home() {
 
 	const minWidth600 = useMediaQuery("(min-width: 600px)");
 
-	const maxWidth = () => minWidth600() ? "50vw" : "80vw";
+	const maxWidth = () => minWidth600() ? "50vw" : "100vw";
 
 	// Position a Paper component in the middle of the screen
 	return <Box sx={{ height: "100vh" }}>
