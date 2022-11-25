@@ -1,9 +1,5 @@
 {
-	"routes": [
-		{
-			"route": "/*",
-			"rewrite": "/index.html",
-			"exclude": ["/images/*.{png,jpg,gif}", "*.js", "*.css", "*.json", "*.xml", "*.txt", "*.ico", "*.svg", "*.woff", "*.woff2", "*.ttf", "*.eot", "*.otf"]
-		}
-	]
+	"navigationFallback": {
+		"rewrite": "/index.html"
+	  }
 }
