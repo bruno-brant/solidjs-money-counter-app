@@ -10,22 +10,23 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@suid/vite-plugin": "^0.1.0",
     "@typescript-eslint/eslint-plugin": "^5.43.0",
     "@typescript-eslint/parser": "^5.43.0",
     "eslint": "^8.27.0",
+    "eslint-plugin-solid": "^0.8.0",
+    "sass": "^1.56.0",
     "typescript": "^4.8.4",
     "vite": "^3.2.3",
+    "vite-imagetools": "^4.0.11",
     "vite-plugin-eslint": "^1.8.1",
     "vite-plugin-solid": "^2.4.0"
   },
   "dependencies": {
     "@solidjs/router": "^0.5.1",
-    "@suid/icons-material": "^0.4.1",
-    "@suid/material": "^0.6.3",
-    "@suid/vite-plugin": "^0.0.3",
-    "eslint-plugin-solid": "^0.8.0",
-    "sass": "^1.56.0",
-    "solid-js": "^1.5.1"
+    "@suid/icons-material": "^0.5.1",
+    "@suid/material": "^0.8.0",
+    "solid-js": "^1.6.1"
   },
   "repository": "https://github.com/bruno-brant/solidjs-money-counter-app.git",
   "author": "Bruno Brant <1890900+bruno-brant@users.noreply.github.com>",

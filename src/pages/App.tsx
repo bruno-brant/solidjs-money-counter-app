@@ -29,7 +29,7 @@ function App() {
 			<Box sx={{ my: 6 }}>
 				<Routes>
 					<Route path="/" element={<Home />} />
-					<Route path="/counter" element={<Counter />} />
+					<Route path="/scan" element={<Counter />} />
 					<Route path="*" element={<NotFound />} />
 				</Routes>
 			</Box>
