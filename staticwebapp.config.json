@@ -1,0 +1,9 @@
+{
+	"routes": [
+		{
+			"route": "/*",
+			"rewrite": "/index.html",
+			"exclude": ["/images/*.{png,jpg,gif}", "*.js", "*.css"]
+		}
+	]
+}
