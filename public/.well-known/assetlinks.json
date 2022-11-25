@@ -1,6 +1,14 @@
-[{
-        "relation": ["delegate_permission/common.handle_all_urls"],
-        "target" : { "namespace": "android_app", "package_name": "dreamsforge.moedeiro",
-                     "sha256_cert_fingerprints": ["B3:69:A5:9F:6A:CA:2F:A9:8E:28:D3:CE:44:B3:DE:9A:68:55:11:80:1C:0B:CB:9A:AA:2D:97:74:83:A6:67:A4"] }
+[
+      {
+            "relation": [
+                  "delegate_permission/common.handle_all_urls"
+            ],
+            "target": {
+                  "namespace": "android_app",
+                  "package_name": "dreamsforge.moedeiro",
+                  "sha256_cert_fingerprints": [
+                        "B3:69:A5:9F:6A:CA:2F:A9:8E:28:D3:CE:44:B3:DE:9A:68:55:11:80:1C:0B:CB:9A:AA:2D:97:74:83:A6:67:A4"
+                  ]
+            }
       }
 ]

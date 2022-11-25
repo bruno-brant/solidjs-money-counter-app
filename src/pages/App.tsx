@@ -1,3 +1,5 @@
+import { Route, Routes } from "@solidjs/router";
+
 import Typography from "@suid/material/Typography";
 import Box from "@suid/material/Box";
 import Container from "@suid/material/Container";
@@ -6,7 +8,6 @@ import Stack from "@suid/material/Stack";
 import { Toll } from "@suid/icons-material";
 
 import { Counter } from "./Counter";
-import { Route, Routes } from "@solidjs/router";
 import { NotFound } from "./NotFound";
 import { Home } from "./Home/Home";
 

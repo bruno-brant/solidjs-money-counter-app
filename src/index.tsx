@@ -5,6 +5,8 @@ import CssBaseline from "@suid/material/CssBaseline";
 import { render } from "solid-js/web";
 import { DebugContext } from "./components/Debugging";
 
+//import Worker from "./service-worker?worker";
+
 import "./index.css";
 import App from "./pages/App";
 import { getQueryParams } from "./utils";
@@ -27,6 +29,13 @@ function root() {
 			</DebugContext.Provider>
 		</ThemeProvider>
 	</>;
+}
+
+// Register service worker from service-worker.ts
+if ("serviceWorker" in navigator) {
+	window.addEventListener("load", () => {
+		navigator.serviceWorker.register("/service-worker.js");
+	});
 }
 
 render(root, document.getElementById("root") as HTMLElement);

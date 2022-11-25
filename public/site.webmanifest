@@ -1,9 +1,10 @@
 {
     "$schema": "https://json.schemastore.org/web-manifest-combined.json",
+    "id": "/",
     "name": "Moedeiro: conte suas moedas!",
     "short_name": "Moedeiro",
     "description": "Conte suas moedas!",
-    "start_url": "./index.html",
+    "start_url": "./",
     "icons": [
         {
             "src": "./android-chrome-192x192.png",
