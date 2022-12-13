@@ -65,7 +65,7 @@ export class Predictor {
 	 * @param imageBase64 The base64 encoded image to process.
 	 * @returns Asyncronously returns the result of the prediction.
 	 */
-	@timeout(10_000)
+	@timeout(25_000)
 	public async process(imageBase64: string): Promise<ProcessingResult> {
 		const result = await fetch(`${this.baseUrl}/v1/predict`, {
 			method: "POST",
